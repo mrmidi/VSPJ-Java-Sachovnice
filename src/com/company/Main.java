@@ -4,10 +4,36 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        //System.out.println(TheNoDefFoundClass.class.getProtectionDomain().getCodeSource().getLocation());
-	// write your code here
-        // int[] pos = new int[]{5, 7}; //initial position
-        // HraSachovnice figure = new HraSachovnice(pos); //initialize with position
+        System.out.println("Chess. Run with --game argument to make infinite moves. (c) 2021");
+
+        if (args.equals("--game")) {
+            gameMenu();
+        }
+
+        byte size_x, size_y, actual_x, actual_y;
+        size_x = 7;
+        size_y = 7;
+        actual_x = 3;
+        actual_y = 5;
+        System.out.println("Initializing board...");
+        HraSachovnice figure = new HraSachovnice(size_x, size_y, actual_x, actual_y);
+        figure.drawGrid();
+        System.out.println(figure);
+        figure.nacti_direction();
+        figure.drawGrid();
+        System.out.println(figure);
+
+        try {
+            HraSachovnice fig2 = (HraSachovnice)figure.clone();
+            System.out.println("We have succesfully cloned our object!");
+            System.out.println(fig2);
+        } catch (CloneNotSupportedException e) {
+            System.out.println("Can't clone Object: " + e);
+        }
+
+    }
+
+    public static void gameMenu(){
         HraSachovnice figure = new HraSachovnice(); //start at 0,0 with 8x8 board
         Scanner input = new Scanner(System.in);
         String key;
@@ -33,6 +59,6 @@ public class Main {
             }
         } while (!key.equals("k"));
         System.out.println("bye!");
-
+        System.exit(0);
     }
 }

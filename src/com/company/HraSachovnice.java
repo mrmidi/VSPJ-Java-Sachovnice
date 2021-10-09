@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.Scanner;
 
-public class HraSachovnice {
+public class HraSachovnice implements Cloneable {
     //int[] pos = new int[]{0,0};
     Boolean firstDraw = true;
     int moveCount = 0;
@@ -19,13 +19,11 @@ public class HraSachovnice {
 
     //constructor with parameters
     public HraSachovnice(byte size_x, byte size_y, byte actual_x, byte actual_y) {
-        if (test()) { //check for smth
-            this.size_x = size_x;
-            this.size_y = size_y;
-            this.actual_x = actual_x;
-            this.actual_y = actual_x;
-        }
-        else { //create with default parameters
+        this.size_x = size_x;
+        this.size_y = size_y;
+        this.actual_x = actual_x;
+        this.actual_y = actual_x;
+        if (!test()) { //set default size and position if initialized not properly
             this.size_x = 7;
             this.size_y = 7;
             this.actual_x = 0;
@@ -57,6 +55,9 @@ public class HraSachovnice {
     }
 
     public boolean test() {
+        if (this.size_x <= 0 && this.size_y <= 0) {
+        return false; }
+        if (this.actual_x > size_x || this.actual_y > size_y) { return false; }
         return true;
     }
 
@@ -77,12 +78,14 @@ public class HraSachovnice {
         return isInBounds();
     }
 
+    //what for?!
     public boolean can_move() {
-        return false;
+        return isInBounds();
     }
 
     public void nacti_direction() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Hit WSAD to move your figure on the board: ");
         String cmd = scanner.nextLine();
         switch (cmd) {
             case "w":
@@ -125,9 +128,13 @@ public class HraSachovnice {
     //draws chessboard line by line from upper side to down
     public void drawGrid() {
         System.out.println(" -A-B-C-D-E-F-G-H-");
-        for (int i = this.size_x + 1; i > -1; i--) {
+        for (int i = this.size_x; i > -1; i--) {
             drawLine(i);
         }
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+            return super.clone();
     }
 
     public void drawLine(int linenumber) {
