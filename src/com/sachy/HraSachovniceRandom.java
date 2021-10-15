@@ -1,9 +1,9 @@
-package com.company;
+package com.sachy;
 
+import java.util.Random;
 import java.util.Scanner;
 
-
-public class HraSachovniceManual extends HraSachovnice implements Cloneable {
+public class HraSachovniceRandom extends HraSachovnice implements Cloneable {
     //int[] pos = new int[]{0,0};
     Boolean firstDraw = true;
     int moveCount = 0;
@@ -12,7 +12,7 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
 
 
     //constructor w/o parameters
-    public HraSachovniceManual() {
+    public HraSachovniceRandom() {
         size_x = 7;
         size_y = 7;
         actual_x = 0;
@@ -20,7 +20,7 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
     }
 
     //constructor with parameters
-    public HraSachovniceManual(byte size_x, byte size_y, byte actual_x, byte actual_y) {
+    public HraSachovniceRandom(byte size_x, byte size_y, byte actual_x, byte actual_y) {
         this.size_x = size_x;
         this.size_y = size_y;
         this.actual_x = actual_x;
@@ -58,31 +58,39 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
 
     public boolean test() {
         if (this.size_x <= 0 && this.size_y <= 0) {
-        return false; }
+            return false; }
         if (this.actual_x > size_x || this.actual_y > size_y) { return false; }
         return true;
     }
 
     //doesn't need this, but to be accomplished with TOR
     public boolean can_up() {
-        return isInBounds();
+        if (this.actual_y + 1 > this.size_y) { return false; }
+        return true;
     }
 
     public boolean can_down() {
-        return  isInBounds();
+        if (this.actual_y - 1 < 0) { return false; }
+        return true;
     }
 
     public boolean can_left() {
-        return isInBounds();
+        if (this.actual_x - 1 > 0) { return false; }
+        return true;
     }
 
     public boolean can_right() {
-        return isInBounds();
+        if (this.actual_y + 1 > this.size_y) { return false; }
+        return true;
     }
 
-    //what for?!
-    public boolean can_move() {
-        return isInBounds();
+    public boolean can_move(String direction) {
+        direction = direction.toLowerCase();
+        if (direction.equals("up")) { return can_up(); }
+        else if (direction.equals("down")) {return can_down(); }
+        else if (direction.equals("left")) {return can_left(); }
+        else return can_right();
+
     }
 
     public void nacti_direction() {
@@ -106,25 +114,44 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
     }
 
     public void moveRight() {
-        if (isInBounds()) {
+        if (can_right()) {
             this.actual_x++;
         }
 
     }
     public void moveLeft() {
-        if (isInBounds()) {
+        if (can_left()) {
             this.actual_x--;
         }
     }
     public void moveUp() {
-        if (isInBounds()) {
+        if (can_up()) {
             this.actual_y++;
         }
     }
     public void moveDown() {
-        if (isInBounds()) {
+        if (can_down()) {
             this.actual_y--;
         }
+    }
+
+    public void move(String direction) {
+        switch (direction) {
+            case "up":
+                moveUp();
+                break;
+            case "down":
+                moveDown();
+                break;
+            case "left":
+                moveLeft();
+                break;
+            case "right":
+                moveRight();
+                break;
+        }
+
+
     }
 
     //draws chessboard line by line from upper side to down
@@ -136,7 +163,7 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
     }
 
     public Object clone() throws CloneNotSupportedException {
-            return super.clone();
+        return super.clone();
     }
 
     public void drawLine(int linenumber) {
@@ -165,6 +192,67 @@ public class HraSachovniceManual extends HraSachovnice implements Cloneable {
 
     @Override
     void Execute() {
-        nacti_direction();
+        boolean moved = false;
+        String direction = gen();
+        while (!moved) {
+            if (can_move(direction)) {
+                move(direction);
+                moved = true;
+            } else { direction = gen(); };
+        }
+        System.out.println(this);
+
     }
+
+    private String gen() {
+        int direction;
+        Random random = new Random();
+        direction = random.nextInt(0,4);
+        System.out.println(direction);
+        if (direction == 0) { return "up"; }
+        else if (direction == 1) { return "down"; }
+        else if (direction == 2 ) {return "left"; }
+        else { return "right"; }
+    }
+/*
+    public int[] genMove() {
+        /*
+        TODO Direction generator.
+        for X values:
+        0 stay at place
+        1 move left
+        2 move right
+        for Y values:
+        stay at place
+        1 move up
+        2 move down
+        Main idea that figure can't stay, it should move somewhere.
+        It can move diagonally.
+
+        Random random = new Random();
+        int rand_x;
+        int rand_y;
+        rand_x = random.nextInt(0, 2);
+        rand_y = random.nextInt(0, 2);
+        //todo write logging. temporary is here
+        System.out.println("x: " + rand_x + " y: " + rand_y);
+
+        while (can_left() && can_right() && can_up() && can_down()) {
+            int cyclecount = 0;
+            while (rand_x == 0 & rand_y == 0) {
+                cyclecount++;
+                System.out.println("both values are zeroes, regenerate numbers");
+                rand_x = random.nextInt(0, 2);
+                rand_y = random.nextInt(0, 2);
+                System.out.println("x: " + rand_x + " y: " + rand_y);
+            }
+            System.out.println("can't move, regenerate numbers");
+
+        }
+
+        int[] pos = {0, 0};
+        return pos;
+
+    }
+    */
 }
